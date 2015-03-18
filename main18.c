@@ -582,9 +582,12 @@ void sendEventToUsb( void )
 
 		midiData.Val = 0;   //must set all unused values to 0 so go ahead
                                     //  and set them all to 0
-		midiData.CableNumber = 1;
-        midiData.CodeIndexNumber = MIDI_CIN_NOTE_ON;
-        midiData.DATA_0 = midiEvent[midiEventReadPointer][0];     // Status Byte
+		midiData.CableNumber = 0;
+
+        uint8_t statusByte = midiEvent[midiEventReadPointer][0];
+
+        midiData.CodeIndexNumber = statusByte >> 4;
+        midiData.DATA_0 = statusByte;                             // Status Byte
         midiData.DATA_1 = midiEvent[midiEventReadPointer][1];     // Data Byte 1
         midiData.DATA_2 = midiEvent[midiEventReadPointer][2];     // Data Byte 2
         USBTxHandle = USBTxOnePacket(USB_DEVICE_AUDIO_MIDI_ENDPOINT,(uint8_t*)&midiData,4);
